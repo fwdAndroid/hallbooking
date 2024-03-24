@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "627897215197",
+    "project_id": "hallbooking-74fe2",
+    "storage_bucket": "hallbooking-74fe2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627897215197:android:167b4f66135c948628d334",
+        "android_client_info": {
+          "package_name": "com.example.hallbooking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHkf6mlTYP4VFlYyjgw2s7GGciJ97bOv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
