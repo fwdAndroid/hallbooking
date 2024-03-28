@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hallbooking/screens/booking/edit_booking.dart';
+import 'package:hallbooking/widgets/button.dart';
 
 import 'package:hallbooking/widgets/colors.dart';
 
@@ -38,6 +40,7 @@ class _BookingDetailState extends State<BookingDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xffffc525),
         centerTitle: true,
         title: Text("Show Booking Details"),
       ),
@@ -181,18 +184,24 @@ class _BookingDetailState extends State<BookingDetail> {
                     fontWeight: FontWeight.w500,
                     fontSize: 14),
               ),
-              // Divider(),
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: SaveButton(
-              //       title: "Edit Details",
-              //       onTap: () {
-              //         Navigator.push(
-              //             context,
-              //             MaterialPageRoute(
-              //                 builder: (builder) => EditBooking()));
-              //       }),
-              // )
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SaveButton(
+                    title: "Edit Details",
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => EditBooking(
+                                    uuid: widget.uuid,
+                                    paidAmount: widget.paidAmount.toString(),
+                                    totalAmount: widget.totalAmount.toString(),
+                                    remaingAmount:
+                                        widget.remainingAmount.toString(),
+                                  )));
+                    }),
+              )
             ],
           ),
         ),

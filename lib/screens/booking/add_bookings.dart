@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hallbooking/screens/main/main_dashboard.dart';
+import 'package:hallbooking/widgets/colors.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:hallbooking/widgets/button.dart';
@@ -33,30 +34,27 @@ class _AddBookingState extends State<AddBooking> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(2015, 8),
+      firstDate: DateTime.now(), // Set firstDate to today's date
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        _dateControllerStart.text = DateFormat('yyyy-MM-dd')
-            .format(picked); // you can format the date as you wish
+        _dateControllerStart.text = DateFormat('yyyy-MM-dd').format(picked);
       });
   }
 
-  //End Dat
   Future<void> _selectDateEnd(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDateEnd,
-      firstDate: DateTime(2015, 8),
+      firstDate: DateTime.now(), // Set firstDate to today's date
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != selectedDateEnd)
       setState(() {
         selectedDateEnd = picked;
-        _dateControllerEnd.text = DateFormat('yyyy-MM-dd')
-            .format(picked); // you can format the date as you wish
+        _dateControllerEnd.text = DateFormat('yyyy-MM-dd').format(picked);
       });
   }
 
@@ -72,6 +70,7 @@ class _AddBookingState extends State<AddBooking> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: mainBtnColor,
         centerTitle: true,
         title: Text("Add Booking"),
       ),

@@ -6,6 +6,7 @@ class TextFormInputField extends StatelessWidget {
   final TextEditingController controller;
   final bool isPass;
   final String hintText;
+  final String? labelText;
   final IconData? IconSuffix;
   final IconData? preFixICon;
   final TextInputType textInputType;
@@ -15,6 +16,7 @@ class TextFormInputField extends StatelessWidget {
       required this.controller,
       this.isPass = false,
       this.IconSuffix,
+      this.labelText,
       this.preFixICon,
       required this.hintText,
       required this.textInputType})
@@ -27,6 +29,7 @@ class TextFormInputField extends StatelessWidget {
       height: 60,
       child: TextField(
         decoration: InputDecoration(
+          labelText: labelText,
           suffixIcon: Icon(
             IconSuffix,
             color: textformColor,
