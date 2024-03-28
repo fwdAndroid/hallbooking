@@ -37,64 +37,71 @@ class _EditBookingState extends State<EditBooking> {
         centerTitle: true,
         title: Text("Edit Booking Detail"),
       ),
-      body: Column(
-        children: [
-          Image.asset("assets/logo.png"),
-          Container(
-            margin: const EdgeInsets.only(left: 10, right: 10),
-            child: TextFormInputField(
-                labelText: "Total Amount",
-                controller: _totalAmountController,
-                hintText: "Total Rent Amount",
-                IconSuffix: Icons.money,
-                textInputType: TextInputType.number),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 10, right: 10),
-            child: TextFormInputField(
-                labelText: "Total Paid Amount",
-                controller: _payableAmountController,
-                hintText: "Paid Amount",
-                IconSuffix: Icons.macro_off_outlined,
-                textInputType: TextInputType.number),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 10, right: 10),
-            child: TextFormInputField(
-                labelText: "Total Remaining Amount",
-                controller: _remainAmountController,
-                hintText: "Remaining Amount",
-                IconSuffix: Icons.macro_off_outlined,
-                textInputType: TextInputType.number),
-          ),
-          isLoading
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : SaveButton(
-                  title: "Edit",
-                  onTap: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    await FirebaseFirestore.instance
-                        .collection("booking")
-                        .doc(widget.uuid)
-                        .update({
-                      "remainingAmount":
-                          int.parse(_remainAmountController.text),
-                      "paidAmount": int.parse(_payableAmountController.text),
-                      "totalAmount": int.parse(_totalAmountController.text)
-                    });
-                    setState(() {
-                      isLoading = false;
-                    });
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (builder) => ShowBooking()));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Booking Details Updated")));
-                  })
-        ],
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset("assets/logo.png"),
+            Container(
+              margin: const EdgeInsets.only(left: 10, right: 10),
+              child: TextFormInputField(
+                  labelText: "Total Amount",
+                  controller: _totalAmountController,
+                  hintText: "Total Rent Amount",
+                  IconSuffix: Icons.money,
+                  textInputType: TextInputType.number),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 10, right: 10),
+              child: TextFormInputField(
+                  labelText: "Total Paid Amount",
+                  controller: _payableAmountController,
+                  hintText: "Paid Amount",
+                  IconSuffix: Icons.macro_off_outlined,
+                  textInputType: TextInputType.number),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 10, right: 10),
+              child: TextFormInputField(
+                  labelText: "Total Remaining Amount",
+                  controller: _remainAmountController,
+                  hintText: "Remaining Amount",
+                  IconSuffix: Icons.macro_off_outlined,
+                  textInputType: TextInputType.number),
+            ),
+            isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : SaveButton(
+                    title: "Edit",
+                    onTap: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await FirebaseFirestore.instance
+                          .collection("booking")
+                          .doc(widget.uuid)
+                          .update({
+                        "remainingAmount":
+                            int.parse(_remainAmountController.text),
+                        "paidAmount": int.parse(_payableAmountController.text),
+                        "totalAmount": int.parse(_totalAmountController.text)
+                      });
+                      setState(() {
+                        isLoading = false;
+                      });
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => ShowBooking()));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Booking Details Updated")));
+                    })
+          ],
+        ),
       ),
     );
   }

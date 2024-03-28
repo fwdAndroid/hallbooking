@@ -44,165 +44,171 @@ class _BookingDetailState extends State<BookingDetail> {
         centerTitle: true,
         title: Text("Show Booking Details"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Client Name",
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              Text(
-                widget.name,
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-              Divider(),
-              Text(
-                "Event Category",
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              Text(
-                widget.purpose,
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-              Divider(),
-              Text(
-                "Contact Number",
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              Text(
-                widget.contactNumber,
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-              Divider(),
-              Text(
-                "Event Detail",
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              Text(
-                widget.addressController,
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-              Divider(),
-              Text(
-                "Event Start Date",
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              Text(
-                widget.eventStartDate,
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-              Divider(),
-              Text(
-                "Event End Date",
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              Text(
-                widget.eventEndDate,
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-              Divider(),
-              Text(
-                "Total Amount",
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              Text(
-                widget.totalAmount.toString(),
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-              Divider(),
-              Text(
-                "Paid Amount",
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              Text(
-                widget.paidAmount.toString(),
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-              Divider(),
-              Text(
-                "Remaining Amount",
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              Text(
-                widget.remainingAmount.toString(),
-                style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-              Divider(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SaveButton(
-                    title: "Edit Details",
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (builder) => EditBooking(
-                                    uuid: widget.uuid,
-                                    paidAmount: widget.paidAmount.toString(),
-                                    totalAmount: widget.totalAmount.toString(),
-                                    remaingAmount:
-                                        widget.remainingAmount.toString(),
-                                  )));
-                    }),
-              )
-            ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Client Name",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.name,
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Text(
+                  "Event Category",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.purpose,
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Text(
+                  "Contact Number",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.contactNumber,
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Text(
+                  "Event Detail",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.addressController,
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Text(
+                  "Event Start Date",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.eventStartDate,
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Text(
+                  "Event End Date",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.eventEndDate,
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Text(
+                  "Total Amount",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.totalAmount.toString(),
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Text(
+                  "Paid Amount",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.paidAmount.toString(),
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Text(
+                  "Remaining Amount",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.remainingAmount.toString(),
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SaveButton(
+                        title: "Edit Details",
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (builder) => EditBooking(
+                                        uuid: widget.uuid,
+                                        paidAmount:
+                                            widget.paidAmount.toString(),
+                                        totalAmount:
+                                            widget.totalAmount.toString(),
+                                        remaingAmount:
+                                            widget.remainingAmount.toString(),
+                                      )));
+                        }),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

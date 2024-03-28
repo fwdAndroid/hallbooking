@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hallbooking/screens/booking/add_bookings.dart';
+import 'package:hallbooking/screens/booking/book_search.dart';
 import 'package:hallbooking/screens/booking/booking_detail.dart';
 import 'package:hallbooking/widgets/colors.dart';
 
@@ -36,6 +37,10 @@ class _ShowBookingState extends State<ShowBooking> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (builder) => BookSearch()));
+              },
               decoration: InputDecoration(
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25.0),
