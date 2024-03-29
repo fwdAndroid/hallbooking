@@ -76,7 +76,7 @@ class _AddBookingState extends State<AddBooking> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               margin: const EdgeInsets.only(left: 10, right: 10),

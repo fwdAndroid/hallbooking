@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hallbooking/screens/booking/add_bookings.dart';
-import 'package:hallbooking/screens/booking/book_search.dart';
 import 'package:hallbooking/screens/booking/booking_detail.dart';
+import 'package:hallbooking/screens/booking/booksearch.dart';
 import 'package:hallbooking/widgets/colors.dart';
 
 class ShowBooking extends StatefulWidget {
@@ -42,6 +42,7 @@ class _ShowBookingState extends State<ShowBooking> {
                     MaterialPageRoute(builder: (builder) => BookSearch()));
               },
               decoration: InputDecoration(
+                hintText: "Search",
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25.0),
                   borderSide: BorderSide(
@@ -55,7 +56,6 @@ class _ShowBookingState extends State<ShowBooking> {
                     width: 2.0,
                   ),
                 ),
-                suffixIcon: Icon(Icons.search),
               ),
             ),
           ),
@@ -243,4 +243,6 @@ class _ShowBookingState extends State<ShowBooking> {
       ),
     );
   }
+
+  //Functions
 }
