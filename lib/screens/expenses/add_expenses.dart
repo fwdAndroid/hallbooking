@@ -54,8 +54,8 @@ class _AddExpensesState extends State<AddExpenses> {
     'Maintenance',
     'Gunsel Diesel',
     "Wages",
-    "Internet"
-        'Others',
+    "Internet",
+    'Others',
   ];
 
   @override
