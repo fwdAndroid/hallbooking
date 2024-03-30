@@ -17,7 +17,6 @@ class _ShowBookingState extends State<ShowBooking> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.filter))],
         centerTitle: true,
         title: Text("Bookings"),
       ),
