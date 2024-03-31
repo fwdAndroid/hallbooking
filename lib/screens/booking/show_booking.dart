@@ -19,6 +19,16 @@ class _ShowBookingState extends State<ShowBooking> {
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
   bool isSearch = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    startDate = DateTime.now(); // Initialize startDate with current date
+    endDate = DateTime.now().add(
+        Duration(days: 90)); // Initialize endDate to 3 months from current date
+    startDateController.text = DateFormat('yyyy-MM-dd').format(startDate);
+    endDateController.text = DateFormat('yyyy-MM-dd').format(endDate);
+  }
 
   @override
   Widget build(BuildContext context) {
