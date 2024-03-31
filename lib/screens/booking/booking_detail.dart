@@ -16,6 +16,7 @@ class BookingDetail extends StatefulWidget {
   final remainingAmount;
   final totalAmount;
   final uuid;
+  final secondIncome;
   const BookingDetail({
     super.key,
     required this.addressController,
@@ -23,6 +24,7 @@ class BookingDetail extends StatefulWidget {
     required this.contactNumber,
     required this.eventEndDate,
     required this.eventStartDate,
+    required this.secondIncome,
     required this.name,
     required this.paidAmount,
     required this.purpose,
@@ -180,6 +182,21 @@ class _BookingDetailState extends State<BookingDetail> {
                 ),
                 Text(
                   widget.remainingAmount.toString(),
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
+                ),
+                Divider(),
+                Text(
+                  "Second Income",
+                  style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                Text(
+                  widget.secondIncome.toString(),
                   style: TextStyle(
                       color: titleColor,
                       fontWeight: FontWeight.w500,

@@ -238,6 +238,8 @@ class _ShowBookingState extends State<ShowBooking> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (builder) => BookingDetail(
+                                            secondIncome:
+                                                data['secondIncome'].toString(),
                                             addressController:
                                                 data['_addressController'],
                                             eventEndDate: data['eventEndDate'],
@@ -396,6 +398,9 @@ class _ShowBookingState extends State<ShowBooking> {
                                             MaterialPageRoute(
                                               builder: (builder) =>
                                                   BookingDetail(
+                                                secondIncome:
+                                                    data['secondIncome']
+                                                        .toString(),
                                                 addressController:
                                                     data['_addressController'],
                                                 eventEndDate:

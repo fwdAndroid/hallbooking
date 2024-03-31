@@ -146,6 +146,8 @@ class _CategoryBookingSearchState extends State<CategoryBookingSearch> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (builder) => BookingDetail(
+                                      secondIncome:
+                                          data['secondIncome'].toString(),
                                       addressController:
                                           data['_addressController'],
                                       eventEndDate: data['eventEndDate'],
