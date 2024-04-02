@@ -5,6 +5,7 @@ import 'package:hallbooking/widgets/colors.dart';
 class TextFormInputField extends StatelessWidget {
   final TextEditingController controller;
   final bool isPass;
+  final bool readOnly;
   final String hintText;
   final String? labelText;
   final IconData? IconSuffix;
@@ -15,6 +16,7 @@ class TextFormInputField extends StatelessWidget {
       {Key? key,
       required this.controller,
       this.isPass = false,
+      this.readOnly = false,
       this.IconSuffix,
       this.labelText,
       this.preFixICon,
@@ -28,6 +30,7 @@ class TextFormInputField extends StatelessWidget {
       width: 343,
       height: 60,
       child: TextField(
+        readOnly: readOnly,
         decoration: InputDecoration(
           labelText: labelText,
           suffixIcon: Icon(

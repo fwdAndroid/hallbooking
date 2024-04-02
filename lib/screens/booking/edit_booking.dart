@@ -1,82 +1,121 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hallbooking/screens/booking/show_booking.dart';
 import 'package:hallbooking/widgets/button.dart';
 import 'package:hallbooking/widgets/colors.dart';
 import 'package:hallbooking/widgets/textform.dart';
 
 class EditBooking extends StatefulWidget {
-  final uuid;
-  final totalAmount;
-  final paidAmount;
-  final remaingAmount;
-  EditBooking(
-      {super.key,
-      required this.paidAmount,
-      required this.remaingAmount,
-      required this.totalAmount,
-      required this.uuid});
+  final String uuid;
+  final String totalAmount;
+  final String paidAmount;
+  final String remainingAmount;
+  final String eventStartDate;
+
+  EditBooking({
+    required this.uuid,
+    required this.paidAmount,
+    required this.remainingAmount,
+    required this.totalAmount,
+    required this.eventStartDate,
+  });
 
   @override
   State<EditBooking> createState() => _EditBookingState();
 }
 
 class _EditBookingState extends State<EditBooking> {
-  TextEditingController _totalAmountController = TextEditingController();
-  TextEditingController _payableAmountController = TextEditingController();
-  TextEditingController _remainAmountController = TextEditingController();
-  bool isLoading = false;
+  TextEditingController _newAmountController = TextEditingController();
+  TextEditingController _remainingAmountController = TextEditingController();
+  TextEditingController _paidAmountController = TextEditingController();
+  String updatedRemainingAmount = '';
+  String? updatedPaidAmount;
+
+  @override
+  void initState() {
+    super.initState();
+    _remainingAmountController.text = widget.remainingAmount;
+    _paidAmountController.text = widget.paidAmount;
+    updatedRemainingAmount = widget.remainingAmount;
+    updatedPaidAmount = widget.paidAmount;
+  }
+
+  void _updateRemainingAndPaidAmount() {
+    final newAmount = int.tryParse(_newAmountController.text) ?? 0;
+    final remainingAmount = int.tryParse(updatedRemainingAmount) ?? 0;
+    var paidAmount = int.tryParse(updatedPaidAmount!) ?? 0;
+
+    // If remaining amount is already 0, display message and return
+    if (remainingAmount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Remaining amount is already paid.")),
+      );
+      return;
+    }
+
+    // Initialize updatedPaidAmount if not already initialized
+    if (updatedPaidAmount == null) {
+      updatedPaidAmount = widget.paidAmount;
+    }
+
+    // Calculate new remaining and paid amounts
+    final updatedRemainingAmountValue = remainingAmount - newAmount;
+    paidAmount += newAmount;
+
+    // Ensure paid amount is not negative
+    if (paidAmount < 0) {
+      paidAmount = 0;
+    }
+
+    // Update state and controllers
+    setState(() {
+      updatedRemainingAmount = updatedRemainingAmountValue.toString();
+      updatedPaidAmount = paidAmount.toString();
+      _remainingAmountController.text = updatedRemainingAmount;
+      _paidAmountController.text = updatedPaidAmount!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    _totalAmountController.text = widget.totalAmount;
-    _payableAmountController.text = widget.paidAmount;
-    _remainAmountController.text = widget.remaingAmount;
+    bool isLoading = false;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainBtnColor,
         centerTitle: true,
         title: Text("Edit Booking Detail"),
       ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset("assets/logo.png"),
-            Container(
-              margin: const EdgeInsets.only(left: 10, right: 10),
-              child: TextFormInputField(
-                  labelText: "Total Amount",
-                  controller: _totalAmountController,
-                  hintText: "Total Rent Amount",
-                  IconSuffix: Icons.money,
-                  textInputType: TextInputType.number),
-            ),
-            Container(
-              margin: const EdgeInsets.only(left: 10, right: 10),
-              child: TextFormInputField(
-                  labelText: "Total Paid Amount",
-                  controller: _payableAmountController,
-                  hintText: "Paid Amount",
-                  IconSuffix: Icons.macro_off_outlined,
-                  textInputType: TextInputType.number),
-            ),
-            Container(
-              margin: const EdgeInsets.only(left: 10, right: 10),
-              child: TextFormInputField(
-                  labelText: "Total Remaining Amount",
-                  controller: _remainAmountController,
-                  hintText: "Remaining Amount",
-                  IconSuffix: Icons.macro_off_outlined,
-                  textInputType: TextInputType.number),
-            ),
-            isLoading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : SaveButton(
-                    title: "Edit",
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            width: 500,
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset("assets/logo.png"),
+                _buildAmountField("Total Amount", widget.totalAmount),
+                _buildAmountField("Paid Date", widget.eventStartDate),
+                _buildAmountField("Paid Amount", widget.paidAmount),
+                _buildRemainingAmountField(),
+                _buildNewAmountField(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SaveButton(
+                    title: "Add New Amount",
+                    onTap: () {
+                      setState(() {
+                        final newAmount =
+                            int.tryParse(_newAmountController.text) ?? 0;
+                        _updateRemainingAndPaidAmount();
+                        _newAmountController.clear();
+                      });
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SaveButton(
+                    title: "Save Changes",
                     onTap: () async {
                       setState(() {
                         isLoading = true;
@@ -86,22 +125,64 @@ class _EditBookingState extends State<EditBooking> {
                           .doc(widget.uuid)
                           .update({
                         "remainingAmount":
-                            int.parse(_remainAmountController.text),
-                        "paidAmount": int.parse(_payableAmountController.text),
-                        "totalAmount": int.parse(_totalAmountController.text)
+                            int.parse(_remainingAmountController.text),
+                        "paidAmount": int.parse(_paidAmountController.text),
+                        "totalAmount": int.parse(widget.totalAmount)
                       });
                       setState(() {
                         isLoading = false;
                       });
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (builder) => ShowBooking()));
+
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Booking Details Updated")));
-                    })
-          ],
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAmountField(String labelText, String value) {
+    return TextFormInputField(
+      readOnly: true,
+      labelText: labelText,
+      controller: TextEditingController(text: value),
+      hintText: value,
+      IconSuffix: Icons.money,
+      textInputType: TextInputType.number,
+    );
+  }
+
+  Widget _buildRemainingAmountField() {
+    return TextFormInputField(
+      readOnly: true,
+      labelText: "Total Remaining Amount",
+      controller: _remainingAmountController,
+      hintText: "Remaining Amount",
+      IconSuffix: Icons.money_off,
+      textInputType: TextInputType.number,
+    );
+  }
+
+  Widget _buildNewAmountField() {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormInputField(
+              labelText: "New Amount",
+              controller: _newAmountController,
+              hintText: "Enter new amount",
+              IconSuffix: Icons.money,
+              textInputType: TextInputType.number,
+            ),
+          ),
+        ],
       ),
     );
   }

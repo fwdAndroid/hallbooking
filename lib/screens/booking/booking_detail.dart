@@ -213,12 +213,13 @@ class _BookingDetailState extends State<BookingDetail> {
                               context,
                               MaterialPageRoute(
                                   builder: (builder) => EditBooking(
+                                        eventStartDate: widget.eventStartDate,
                                         uuid: widget.uuid,
                                         paidAmount:
                                             widget.paidAmount.toString(),
                                         totalAmount:
                                             widget.totalAmount.toString(),
-                                        remaingAmount:
+                                        remainingAmount:
                                             widget.remainingAmount.toString(),
                                       )));
                         }),
