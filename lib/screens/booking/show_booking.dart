@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hallbooking/screens/booking/add_bookings.dart';
 import 'package:hallbooking/screens/booking/booking_detail.dart';
 import 'package:hallbooking/screens/booking/search_by_category_booking.dart';
+import 'package:hallbooking/screens/income/show_income.dart';
 import 'package:hallbooking/widgets/colors.dart';
 import 'package:intl/intl.dart';
 
@@ -389,7 +390,8 @@ class _ShowBookingState extends State<ShowBooking> {
                                       ),
                                     ],
                                   ),
-                                  trailing: Column(
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       TextButton(
                                         onPressed: () {
@@ -425,7 +427,26 @@ class _ShowBookingState extends State<ShowBooking> {
                                             ),
                                           );
                                         },
-                                        child: Text("View Details"),
+                                        child: Text(
+                                          "View Details",
+                                          style: TextStyle(fontSize: 10),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (builder) => ShowIncome(
+                                                uuid: data['uuid'],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                          "Second Income",
+                                          style: TextStyle(fontSize: 10),
+                                        ),
                                       ),
                                     ],
                                   ),

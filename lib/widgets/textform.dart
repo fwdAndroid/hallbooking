@@ -7,12 +7,13 @@ class TextFormInputField extends StatelessWidget {
   final bool isPass;
   final bool readOnly;
   final String hintText;
+  VoidCallback? tap;
   final String? labelText;
   final IconData? IconSuffix;
   final IconData? preFixICon;
   final TextInputType textInputType;
 
-  const TextFormInputField(
+  TextFormInputField(
       {Key? key,
       required this.controller,
       this.isPass = false,
@@ -20,6 +21,7 @@ class TextFormInputField extends StatelessWidget {
       this.IconSuffix,
       this.labelText,
       this.preFixICon,
+      this.tap,
       required this.hintText,
       required this.textInputType})
       : super(key: key);
@@ -30,6 +32,7 @@ class TextFormInputField extends StatelessWidget {
       width: 343,
       height: 60,
       child: TextField(
+        onTap: tap,
         readOnly: readOnly,
         decoration: InputDecoration(
           labelText: labelText,

@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hallbooking/widgets/button.dart';
 import 'package:hallbooking/widgets/colors.dart';
 import 'package:hallbooking/widgets/textform.dart';
+import 'package:intl/intl.dart';
 
 class EditBooking extends StatefulWidget {
   final String uuid;
@@ -27,8 +29,10 @@ class _EditBookingState extends State<EditBooking> {
   TextEditingController _newAmountController = TextEditingController();
   TextEditingController _remainingAmountController = TextEditingController();
   TextEditingController _paidAmountController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   String updatedRemainingAmount = '';
   String? updatedPaidAmount;
+  DateTime selectedDate = DateTime.now(); //Start Date
 
   @override
   void initState() {
@@ -96,6 +100,14 @@ class _EditBookingState extends State<EditBooking> {
                 _buildAmountField("Total Amount", widget.totalAmount),
                 _buildAmountField("Paid Date", widget.eventStartDate),
                 _buildAmountField("Paid Amount", widget.paidAmount),
+                TextFormInputField(
+                  tap: () => _selectDate(context),
+                  labelText: "Date",
+                  controller: dateController,
+                  hintText: "Date",
+                  IconSuffix: Icons.date_range,
+                  textInputType: TextInputType.number,
+                ),
                 _buildRemainingAmountField(),
                 _buildNewAmountField(),
                 Padding(
@@ -114,29 +126,32 @@ class _EditBookingState extends State<EditBooking> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SaveButton(
-                    title: "Save Changes",
-                    onTap: () async {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await FirebaseFirestore.instance
-                          .collection("booking")
-                          .doc(widget.uuid)
-                          .update({
-                        "remainingAmount":
-                            int.parse(_remainingAmountController.text),
-                        "paidAmount": int.parse(_paidAmountController.text),
-                        "totalAmount": int.parse(widget.totalAmount)
-                      });
-                      setState(() {
-                        isLoading = false;
-                      });
+                  child: isLoading
+                      ? CircularProgressIndicator()
+                      : SaveButton(
+                          title: "Save Changes",
+                          onTap: () async {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            await FirebaseFirestore.instance
+                                .collection("booking")
+                                .doc(widget.uuid)
+                                .update({
+                              "remainingAmount":
+                                  int.parse(_remainingAmountController.text),
+                              "paidAmount":
+                                  int.parse(_paidAmountController.text),
+                              "totalAmount": int.parse(widget.totalAmount)
+                            });
+                            setState(() {
+                              isLoading = false;
+                            });
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Booking Details Updated")));
-                    },
-                  ),
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Booking Details Updated")));
+                          },
+                        ),
                 ),
               ],
             ),
@@ -169,21 +184,26 @@ class _EditBookingState extends State<EditBooking> {
   }
 
   Widget _buildNewAmountField() {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextFormInputField(
-              labelText: "New Amount",
-              controller: _newAmountController,
-              hintText: "Enter new amount",
-              IconSuffix: Icons.money,
-              textInputType: TextInputType.number,
-            ),
-          ),
-        ],
-      ),
+    return TextFormInputField(
+      labelText: "New Amount",
+      controller: _newAmountController,
+      hintText: "Enter new amount",
+      IconSuffix: Icons.money,
+      textInputType: TextInputType.number,
     );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime.now(), // Set firstDate to today's date
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
   }
 }
