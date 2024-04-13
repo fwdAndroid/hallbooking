@@ -1,131 +1,169 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hallbooking/widgets/button.dart';
-import 'package:hallbooking/widgets/textform.dart';
 
 class ShowIncome extends StatefulWidget {
-  final uuid;
-  ShowIncome({super.key, required this.uuid});
+  final String uuid;
+  ShowIncome({Key? key, required this.uuid}) : super(key: key);
 
   @override
   State<ShowIncome> createState() => _ShowIncomeState();
 }
 
 class _ShowIncomeState extends State<ShowIncome> {
-  TextEditingController gasController = TextEditingController();
-  TextEditingController ebController = TextEditingController();
-  TextEditingController acController = TextEditingController();
-  TextEditingController gController = TextEditingController();
-  TextEditingController electricanController = TextEditingController();
-  TextEditingController cleanController = TextEditingController();
+  final TextEditingController gasController = TextEditingController();
+  final TextEditingController ebController = TextEditingController();
+  final TextEditingController acController = TextEditingController();
+  final TextEditingController gController = TextEditingController();
+  final TextEditingController electricanController = TextEditingController();
+  final TextEditingController cleanController = TextEditingController();
+
   bool isLoading = false;
   bool dataAdded = false;
 
   @override
   void initState() {
     super.initState();
-    // Load data from Firebase and set the values to the controllers
     loadIncomeData();
   }
 
-  void loadIncomeData() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection("bookings")
-        .doc(widget.uuid)
-        .get();
+  Future<void> loadIncomeData() async {
+    setState(() {
+      isLoading = true;
+    });
 
-    if (snapshot.exists) {
-      final data = snapshot.data() as Map<String, dynamic>;
-      setState(() {
-        gasController.text = (data['gas'] ?? 0).toString();
-        ebController.text = (data['eb'] ?? 0).toString();
-        acController.text = (data['ac'] ?? 0).toString();
-        gController.text = (data['generator'] ?? 0).toString();
-        electricanController.text = (data['electrician'] ?? 0).toString();
-        cleanController.text = (data['cleaning'] ?? 0).toString();
-        dataAdded = true; // Set dataAdded to true
-      });
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentSnapshot snapshot =
+          await firestore.collection("booking").doc(widget.uuid).get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+        if (data != null) {
+          setState(() {
+            gasController.text = (data['gas'] ?? '').toString();
+            ebController.text = (data['eb'] ?? '').toString();
+            acController.text = (data['ac'] ?? '').toString();
+            gController.text = (data['generator'] ?? '').toString();
+            electricanController.text = (data['electrician'] ?? '').toString();
+            cleanController.text = (data['cleaning'] ?? '').toString();
+          });
+          if (gasController.text.isNotEmpty ||
+              ebController.text.isNotEmpty ||
+              acController.text.isNotEmpty ||
+              gController.text.isNotEmpty ||
+              electricanController.text.isNotEmpty ||
+              cleanController.text.isNotEmpty) {
+            dataAdded =
+                true; // Assumes at least one filled field means all data is added.
+          }
+        }
+      }
+    } catch (e) {
+      // Handle any errors here
+      print(e);
     }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _saveData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      await firestore.collection("booking").doc(widget.uuid).update({
+        'secondIncome': int.parse(gasController.text) +
+            int.parse(ebController.text) +
+            int.parse(acController.text) +
+            int.parse(gController.text) +
+            int.parse(electricanController.text) +
+            int.parse(cleanController.text),
+        'gas': int.parse(gasController.text),
+        'eb': int.parse(ebController.text),
+        'ac': int.parse(acController.text),
+        'generator': int.parse(gController.text),
+        'electrician': int.parse(electricanController.text),
+        'cleaning': int.parse(cleanController.text),
+      });
+
+      setState(() {
+        dataAdded = true;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Income data saved successfully.")));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Failed to save income data: ${e.toString()}")));
+    }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xffffc525),
-        centerTitle: true,
-        title: Text("Second Income"),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildAmountField("Gas (per Kg)", gasController, enabled: !dataAdded),
-          _buildAmountField("EB (per Unit Charge)", ebController,
-              enabled: !dataAdded),
-          _buildAmountField("AC (per Hr Charge)", acController,
-              enabled: !dataAdded),
-          _buildAmountField("Generator (per Hr Charge)", gController,
-              enabled: !dataAdded),
-          _buildAmountField("Electrician", electricanController,
-              enabled: !dataAdded),
-          _buildAmountField("Cleaning Charges", cleanController,
-              enabled: !dataAdded),
-          SaveButton(
-            title: "Add",
-            onTap: dataAdded ? null : _saveData, // Set onTap based on dataAdded
-          ),
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: Text('Show Income'),
+          centerTitle: true,
+        ),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView(
+                  children: [
+                    _buildAmountField(
+                        'Gas (per Kg)', gasController, !dataAdded),
+                    _buildAmountField(
+                        'EB (per Unit Charge)', ebController, !dataAdded),
+                    _buildAmountField(
+                        'AC (per Hr Charge)', acController, !dataAdded),
+                    _buildAmountField(
+                        'Generator (per Hr Charge)', gController, !dataAdded),
+                    _buildAmountField(
+                        'Electrician', electricanController, !dataAdded),
+                    _buildAmountField(
+                        'Cleaning Charges', cleanController, !dataAdded),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SaveButton(
+                        onTap: dataAdded ? null : _saveData,
+                        title: 'Save Data',
+                      ),
+                    ),
+                  ],
+                ),
+              ));
   }
 
-  Widget _buildAmountField(String labelText, TextEditingController controller,
-      {bool enabled = false}) {
+  Widget _buildAmountField(
+      String labelText, TextEditingController controller, bool enabled) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         labelText: labelText,
-        hintText: controller.text,
-        icon: Icon(Icons.money),
       ),
       keyboardType: TextInputType.number,
       enabled: enabled,
     );
   }
 
-  void _saveData() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    int gas = _parseTextFieldValue(gasController.text);
-    int eb = _parseTextFieldValue(ebController.text);
-    int ac = _parseTextFieldValue(acController.text);
-    int g = _parseTextFieldValue(gController.text);
-    int electrician = _parseTextFieldValue(electricanController.text);
-    int cleaning = _parseTextFieldValue(cleanController.text);
-
-    await FirebaseFirestore.instance
-        .collection("booking")
-        .doc(widget.uuid)
-        .set({
-      "secondIncome": gas + eb + ac + g + electrician + cleaning,
-    });
-
-    setState(() {
-      isLoading = false;
-      dataAdded = true; // Set dataAdded to true after data is added
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Second Income Added")),
-    );
-  }
-
-  int _parseTextFieldValue(String value) {
-    if (value.isEmpty) {
-      return 0;
-    }
-    return int.tryParse(value) ?? 0;
+  @override
+  void dispose() {
+    super.dispose();
+    // Dispose controllers to avoid memory leaks
+    gasController.dispose();
+    ebController.dispose();
+    acController.dispose();
+    electricanController.dispose();
+    cleanController.dispose();
+    gController.dispose();
   }
 }

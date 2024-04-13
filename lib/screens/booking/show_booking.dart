@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hallbooking/screens/booking/add_bookings.dart';
 import 'package:hallbooking/screens/booking/booking_detail.dart';
 import 'package:hallbooking/screens/booking/search_by_category_booking.dart';
+import 'package:hallbooking/screens/booking/show_paid_date.dart';
 import 'package:hallbooking/screens/income/show_income.dart';
 import 'package:hallbooking/widgets/colors.dart';
 import 'package:intl/intl.dart';
@@ -448,6 +449,22 @@ class _ShowBookingState extends State<ShowBooking> {
                                           style: TextStyle(fontSize: 10),
                                         ),
                                       ),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (builder) =>
+                                                        ShowPaidDate(
+                                                          uuid: data['uuid'],
+                                                          paidTime:
+                                                              data['paidTime'],
+                                                        )));
+                                          },
+                                          child: Text(
+                                            "Paid Dates",
+                                            style: TextStyle(fontSize: 10),
+                                          ))
                                     ],
                                   ),
                                 ),

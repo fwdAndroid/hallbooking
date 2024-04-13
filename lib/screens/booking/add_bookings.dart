@@ -240,7 +240,8 @@ class _AddBookingState extends State<AddBooking> {
                             "remainingAmount":
                                 int.parse(_totalAmountController.text) -
                                     int.parse(_payableAmountController.text),
-                            "secondIncome": 0
+                            "secondIncome": 0,
+                            "paidTime": []
                           });
 
                           setState(() {

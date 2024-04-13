@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hallbooking/screens/main/main_dashboard.dart';
 import 'package:hallbooking/widgets/button.dart';
 import 'package:hallbooking/widgets/colors.dart';
 import 'package:hallbooking/widgets/textform.dart';
@@ -33,6 +34,23 @@ class _EditBookingState extends State<EditBooking> {
   String updatedRemainingAmount = '';
   String? updatedPaidAmount;
   DateTime selectedDate = DateTime.now(); //Start Date
+
+  Future<void> _updateBooking() async {
+    await FirebaseFirestore.instance
+        .collection("booking")
+        .doc(widget.uuid)
+        .update({
+      "remainingAmount": int.parse(_remainingAmountController.text),
+      "paidAmount": int.parse(_paidAmountController.text),
+      "totalAmount": int.parse(widget.totalAmount),
+      "paidTime": FieldValue.arrayUnion([
+        {
+          "paymentDate": dateController.text,
+          "amount": int.parse(_newAmountController.text)
+        }
+      ])
+    });
+  }
 
   @override
   void initState() {
@@ -81,7 +99,6 @@ class _EditBookingState extends State<EditBooking> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLoading = false;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainBtnColor,
@@ -100,6 +117,8 @@ class _EditBookingState extends State<EditBooking> {
                 _buildAmountField("Total Amount", widget.totalAmount),
                 _buildAmountField("Paid Date", widget.eventStartDate),
                 _buildAmountField("Paid Amount", widget.paidAmount),
+                _buildRemainingAmountField(),
+                _buildNewAmountField(),
                 TextFormInputField(
                   tap: () => _selectDate(context),
                   labelText: "Date",
@@ -108,50 +127,37 @@ class _EditBookingState extends State<EditBooking> {
                   IconSuffix: Icons.date_range,
                   textInputType: TextInputType.number,
                 ),
-                _buildRemainingAmountField(),
-                _buildNewAmountField(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SaveButton(
-                    title: "Add New Amount",
-                    onTap: () {
-                      setState(() {
-                        final newAmount =
-                            int.tryParse(_newAmountController.text) ?? 0;
-                        _updateRemainingAndPaidAmount();
-                        _newAmountController.clear();
-                      });
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: isLoading
-                      ? CircularProgressIndicator()
-                      : SaveButton(
-                          title: "Save Changes",
+                  child: FutureBuilder<void>(
+                    future: _updateBooking(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // Show loading indicator
+                      } else if (snapshot.hasError) {
+                        return Text('Please Select Paid Date and Amount');
+                      } else {
+                        return SaveButton(
+                          title: "Add New Amount",
                           onTap: () async {
                             setState(() {
-                              isLoading = true;
+                              final newAmount =
+                                  int.tryParse(_newAmountController.text) ?? 0;
+                              _updateRemainingAndPaidAmount();
                             });
-                            await FirebaseFirestore.instance
-                                .collection("booking")
-                                .doc(widget.uuid)
-                                .update({
-                              "remainingAmount":
-                                  int.parse(_remainingAmountController.text),
-                              "paidAmount":
-                                  int.parse(_paidAmountController.text),
-                              "totalAmount": int.parse(widget.totalAmount)
-                            });
-                            setState(() {
-                              isLoading = false;
-                            });
-
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("Booking Details Updated")));
+                            // Firestore update happens inside _updateBooking() function
+                            await _updateBooking();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (builder) => MainDashboard(),
+                              ),
+                            );
                           },
-                        ),
+                        );
+                      }
+                    },
+                  ),
                 ),
               ],
             ),
