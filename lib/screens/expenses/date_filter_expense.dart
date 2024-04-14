@@ -1,58 +1,47 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hallbooking/screens/expenses/add_expenses.dart';
-import 'package:hallbooking/screens/expenses/date_filter_expense.dart';
 import 'package:hallbooking/screens/expenses/expense_detail.dart';
-import 'package:hallbooking/screens/expenses/search_expense.dart';
 import 'package:hallbooking/widgets/colors.dart';
+import 'package:intl/intl.dart';
 
-class ShowExpenses extends StatefulWidget {
-  const ShowExpenses({super.key});
+class DateFilerExpense extends StatefulWidget {
+  const DateFilerExpense({super.key});
 
   @override
-  State<ShowExpenses> createState() => _ShowExpensesState();
+  State<DateFilerExpense> createState() => _DateFilerExpenseState();
 }
 
-class _ShowExpensesState extends State<ShowExpenses> {
+class _DateFilerExpenseState extends State<DateFilerExpense> {
+  TextEditingController startDateController = TextEditingController();
+  DateTime startDate = DateTime.now();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    startDate = DateTime.now(); // Initialize startDate with current date
+
+    startDateController.text = DateFormat('yyyy-MM-dd').format(startDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (builder) => DateFilerExpense()));
-              },
-              child: Text("Date Filter"))
-        ],
         centerTitle: true,
         title: Text("Expenses"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: mainBtnColor,
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (builder) => AddExpenses()));
-        },
-        child: Icon(
-          Icons.add,
-          color: colorwhite,
-        ),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              controller: startDateController,
+              readOnly: true,
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (builder) => SearchExpense()));
+                _selectStartDate(context);
               },
               decoration: InputDecoration(
-                hintText: "Search By Category",
+                hintText: "Search Date",
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25.0),
                   borderSide: BorderSide(
@@ -74,6 +63,7 @@ class _ShowExpensesState extends State<ShowExpenses> {
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection("expenses")
+                    .where('billDate', isEqualTo: startDateController.text)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -178,5 +168,31 @@ class _ShowExpensesState extends State<ShowExpenses> {
         ],
       ),
     );
+  }
+
+  //Functions
+  Future<void> _selectStartDate(BuildContext context) async {
+    final DateTime? pickedStartDate = await showDatePicker(
+      context: context,
+      initialDate: startDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+
+    if (pickedStartDate != null && pickedStartDate != startDate) {
+      setState(() {
+        startDate = pickedStartDate;
+        startDateController.text = DateFormat('yyyy-MM-dd').format(startDate);
+      });
+    }
+  }
+
+  DateTime _parseDate(String dateString) {
+    return DateFormat('yyyy-MM-dd').parse(dateString);
+  }
+
+  bool _dateInRange(DateTime date, DateTime start, DateTime end) {
+    return date.isAfter(start.subtract(Duration(days: 1))) &&
+        date.isBefore(end.add(Duration(days: 1)));
   }
 }
